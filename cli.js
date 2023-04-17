@@ -735,7 +735,45 @@ async function zkeyExportSolidityCalldata(params, options) {
 
 // java gencall <public.json> <proof.json>
 async function zkeyExportJavaCalldata(params, options) {
-    return zkeyExportSolidityCalldata(params, options);
+    let publicName;
+    let proofName;
+
+    if (params.length < 1) {
+        publicName = "public.json";
+    } else {
+        publicName = params[0];
+    }
+
+    if (params.length < 2) {
+        proofName = "proof.json";
+    } else {
+        proofName = params[1];
+    }
+
+    if (options.verbose) Logger.setLogLevel("DEBUG");
+
+    const pub = JSON.parse(fs.readFileSync(publicName, "utf8"));
+    const proof = JSON.parse(fs.readFileSync(proofName, "utf8"));
+
+    let res;
+    if (proof.protocol == "groth16") {
+        res = await groth16.exportSolidityCallData(proof, pub);
+    } else if (proof.protocol == "plonk") {
+        res = await plonk.exportSolidityCallData(proof, pub);
+    } else if (proof.protocol === "fflonk") {
+        res = await fflonkCmd.fflonkExportCallDataCmd(pub, proof, logger);
+    } else {
+        throw new Error("Invalid Protocol");
+    }
+    res = JSON.parse(`[${res}]`);
+    console.log(JSON.stringify({
+        a: res[0],
+        b: res[1],
+        c: res[2],
+        input: res[3],
+    }));
+
+    return 0;
 }
 
 // powersoftau new <curve> <power> [powersoftau_0000.ptau]",
