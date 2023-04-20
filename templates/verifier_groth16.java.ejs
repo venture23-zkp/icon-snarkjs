@@ -118,6 +118,7 @@ public class SnarkJSVerifier {
     }
 
     static class P2 {
+        // (x0 * i + x1, y0 * i + y1)
         BigInteger x0;
         BigInteger x1;
         BigInteger y0;
@@ -228,27 +229,28 @@ public class SnarkJSVerifier {
 
     public VerifyingKey verifyingKey() {
         VerifyingKey vk = new VerifyingKey();
+
         vk.alfa1 = new P1(
                 new BigInteger("<%=vk_alpha_1[0]%>"),
                 new BigInteger("<%=vk_alpha_1[1]%>"));
 
         vk.beta2 = new P2(
-                new BigInteger("<%=vk_beta_2[0][0]%>"),
                 new BigInteger("<%=vk_beta_2[0][1]%>"),
-                new BigInteger("<%=vk_beta_2[1][0]%>"),
-                new BigInteger("<%=vk_beta_2[1][1]%>"));
+                new BigInteger("<%=vk_beta_2[0][0]%>"),
+                new BigInteger("<%=vk_beta_2[1][1]%>"),
+                new BigInteger("<%=vk_beta_2[1][0]%>"));
 
         vk.gamma2 = new P2(
-                new BigInteger("<%=vk_gamma_2[0][0]%>"),
                 new BigInteger("<%=vk_gamma_2[0][1]%>"),
-                new BigInteger("<%=vk_gamma_2[1][0]%>"),
-                new BigInteger("<%=vk_gamma_2[1][1]%>"));
+                new BigInteger("<%=vk_gamma_2[0][0]%>"),
+                new BigInteger("<%=vk_gamma_2[1][1]%>"),
+                new BigInteger("<%=vk_gamma_2[1][0]%>"));
 
         vk.delta2 = new P2(
-                new BigInteger("<%=vk_delta_2[0][0]%>"),
                 new BigInteger("<%=vk_delta_2[0][1]%>"),
-                new BigInteger("<%=vk_delta_2[1][0]%>"),
-                new BigInteger("<%=vk_delta_2[1][1]%>"));
+                new BigInteger("<%=vk_delta_2[0][0]%>"),
+                new BigInteger("<%=vk_delta_2[1][1]%>"),
+                new BigInteger("<%=vk_delta_2[1][0]%>"));
 
         vk.IC = new P1[] {
                 <%_ for (let i = 0; i < IC.length; i++) { _%>
@@ -287,7 +289,7 @@ public class SnarkJSVerifier {
     public boolean verifyProof(BigInteger[] a, BigInteger[][] b, BigInteger[] c, BigInteger[] input) {
         Proof proof = new Proof();
         proof.A = new P1(a[0], a[1]);
-        proof.B = new P2(b[0][1], b[0][0], b[1][1], b[1][0]);
+        proof.B = new P2(b[0][0], b[0][1], b[1][0], b[1][1]);
         proof.C = new P1(c[0], c[1]);
         return verify(input, proof);
     }
