@@ -104,6 +104,6 @@ jobs:
     - name: 25. Verify the proof
       run: icon-snarkjs groth16 verify verification_key.json public.json proof.json
     - name: 26. Turn the verifier into a smart contract
-      run: icon-snarkjs zkey export javaverifier circuit_final.zkey verifier.sol
+      run: icon-snarkjs zkey export javaverifier circuit_final.zkey verifier.java
     - name: 27. Simulate a verification call
       run: icon-snarkjs zkey export javacalldata public.json proof.json
